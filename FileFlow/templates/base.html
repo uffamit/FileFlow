@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Storage - {% block title %}{% endblock %}</title>
+    <title>FileFlow - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="{{ url_for('home') }}" class="brand-logo">Cloud Storage</a>
+            <a href="{{ url_for('home') }}" class="brand-logo">FileFlow</a>
             <ul class="nav-links">
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>

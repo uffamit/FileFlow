@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment / env files
+venv/
+.env
+
+# OS files
+.DS_Store
+
+# Flask instance folder
+instance/
+
+# Ignore uploaded user files but keep the directory via .gitkeep
+user_files/*
+!user_files/.gitkeep

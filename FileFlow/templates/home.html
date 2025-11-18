@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="home-container">
-    <h1>Welcome to Cloud Storage</h1>
+    <h1>Welcome to FileFlow</h1>
     {% if not current_user.is_authenticated %}
         <div class="auth-buttons">
             <a href="{{ url_for('login') }}" class="btn">Login</a>
