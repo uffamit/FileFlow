@@ -9,6 +9,7 @@ import logging
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), app.config['UPLOAD_FOLDER'])
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -98,6 +99,30 @@ def download_file(file_id):
     except Exception as e:
         app.logger.error(f"Error downloading file: {str(e)}")
         abort(500, description="Error occurred while downloading file")
+
+@app.route('/view_file/<int:file_id>')
+@login_required
+def view_file(file_id):
+    try:
+        file = File.query.get_or_404(file_id)
+        
+        if file.user_id != current_user.id:
+            abort(403, description="You don't have permission to access this file")
+            
+        if not os.path.exists(file.filepath):
+            abort(404, description="File not found in storage")
+            
+        if file.is_folder:
+            abort(400, description="Cannot view a folder")
+            
+        return send_file(
+            file.filepath,
+            as_attachment=False
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Error viewing file: {str(e)}")
+        abort(500, description="Error occurred while viewing file")
 
 @app.route('/delete_file/<int:file_id>', methods=['DELETE'])
 @login_required
