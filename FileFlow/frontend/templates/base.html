@@ -9,14 +9,14 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="{{ url_for('home') }}" class="brand-logo">FileFlow</a>
+            <a href="{{ url_for('auth_bp.home') }}" class="brand-logo">FileFlow</a>
             <ul class="nav-links">
                 {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('folders_bp.dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('auth_bp.logout') }}">Logout</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('auth_bp.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('auth_bp.signup') }}">Sign Up</a></li>
                 {% endif %}
             </ul>
         </div>

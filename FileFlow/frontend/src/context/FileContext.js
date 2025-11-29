@@ -127,6 +127,7 @@ export const FileProvider = ({ children }) => {
   
   useEffect(() => {
     fetchFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   return (

@@ -6,7 +6,8 @@
     <div class="main-content">
         <div class="top-bar">
             <div class="breadcrumb">
-                <a href="{{ url_for('dashboard') }}">Home</a>
+                {# Use the folders blueprint endpoint name #}
+                <a href="{{ url_for('folders_bp.dashboard') }}">Home</a>
             </div>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Search files...">
@@ -14,39 +15,43 @@
         </div>
         <div class="toolbar">
             <div class="file-actions">
-                <button class="btn" id="upload-btn"><i class="fas fa-upload"></i> Upload</button>
-                <button class="btn" id="create-folder-btn"><i class="fas fa-folder-plus"></i> Create Folder</button>
-                <button class="btn" id="rename-btn" disabled><i class="fas fa-pen"></i> Rename</button>
-                <button class="btn" id="delete-btn" disabled><i class="fas fa-trash"></i> Delete</button>
+                <button type="button" class="btn" id="upload-btn" aria-label="Upload file"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
+                <button type="button" class="btn" id="create-folder-btn" aria-label="Create folder"><i class="fas fa-folder-plus" aria-hidden="true"></i> Create Folder</button>
+                <button type="button" class="btn" id="rename-btn" disabled aria-label="Rename selected item"><i class="fas fa-pen" aria-hidden="true"></i> Rename</button>
+                <button type="button" class="btn" id="delete-btn" disabled aria-label="Delete selected items"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
             </div>
             <div class="view-options">
-                <button class="btn" id="list-view-btn" class="active"><i class="fas fa-list"></i></button>
+                <button type="button" class="btn active" id="list-view-btn" aria-pressed="true" aria-label="List view"><i class="fas fa-list" aria-hidden="true"></i></button>
                 <button class="btn" id="grid-view-btn"><i class="fas fa-th"></i></button>
             </div>
         </div>
         <div id="file-browser" class="file-browser-list-view">
+            {% if files|length > 0 %}
             {% for file in files %}
-            <div class="file-item" data-id="{{ file.id }}" data-name="{{ file.filename }}" data-type="{{ 'folder' if file.is_folder else 'file' }}" data-size="{{ file.filesize }}" data-date="{{ file.upload_date }}" draggable="true">
+                <div class="file-item" data-id="{{ file.id }}" data-name="{{ file.filename|e }}" data-type="{{ 'folder' if file.is_folder else 'file' }}" data-size="{{ file.filesize|int }}" data-date="{{ file.created_at.isoformat() if file.created_at else '' }}" draggable="true">
                 <div class="file-icon">
-                    <i class="fas {{ 'fa-folder' if file.is_folder else 'fa-file' }}"></i>
+                        <i class="fas {{ 'fa-folder' if file.is_folder else 'fa-file' }}" aria-hidden="true"></i>
                 </div>
                 <div class="file-name">
                     {% if file.is_folder %}
-                        <a href="{{ url_for('dashboard', folder_id=file.id) }}">{{ file.filename }}</a>
+                            <a href="{{ url_for('folders_bp.dashboard', folder_id=file.id) }}">{{ file.filename|e }}</a>
                     {% else %}
-                        {{ file.filename }}
+                            {{ file.filename|e }}
                     {% endif %}
                 </div>
-                <div class="file-size">{{ file.filesize }}</div>
-                <div class="file-date">{{ file.upload_date }}</div>
+                    <div class="file-size">{{ file.filesize|int }}</div>
+                    <div class="file-date">{{ file.created_at.strftime('%Y-%m-%d %H:%M') if file.created_at else '' }}</div>
                 <div class="file-actions-item">
                     {% if not file.is_folder %}
-                    <a href="{{ url_for('view_file', file_id=file.id) }}" class="btn btn-small" target="_blank">View</a>
-                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn btn-small">Download</a>
+                        <a href="{{ url_for('files_bp.view_file', file_id=file.id) }}" class="btn btn-small" target="_blank" rel="noopener noreferrer">View</a>
+                        <a href="{{ url_for('files_bp.download_file', file_id=file.id) }}" class="btn btn-small" download>Download</a>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
+                {% else %}
+                <div class="empty-state">No files found in this folder</div>
+                {% endif %}
         </div>
     </div>
     <div class="status-bar">
@@ -59,11 +64,17 @@
     </div>
 </div>
 
-<form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" id="upload-form" style="display:none;">
+</form>
+
+<form action="{{ url_for('upload_bp.upload_file') }}" method="POST" enctype="multipart/form-data" id="upload-form" style="display:none;">
+    <input type="hidden" name="folder_id" id="upload-folder-id" value="{{ current_folder_id if current_folder_id else '' }}">
     <input type="file" name="file" id="file-input">
 </form>
 
-<form action="{{ url_for('create_folder') }}" method="POST" id="create-folder-form" style="display:none;">
+</form>
+
+<form action="{{ url_for('folders_bp.create_folder') }}" method="POST" id="create-folder-form" style="display:none;">
+    <input type="hidden" name="parent_folder_id" id="parent-folder-id" value="{{ current_folder_id if current_folder_id else '' }}">
     <input type="text" name="folder_name" id="folder-name-input" required>
 </form>
 

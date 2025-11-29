@@ -13,7 +13,6 @@ import { FileProvider } from './context/FileContext';
 function App() {
   const [viewMode, setViewMode] = useState('list'); // list, grid, details
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [currentPath, setCurrentPath] = useState('/');
   const [showPreview, setShowPreview] = useState(true);
   const [contextMenu, setContextMenu] = useState(null);
   
@@ -79,7 +78,7 @@ function App() {
           
           <main className="App-main">
             <div className="file-browser">
-              <Breadcrumb currentPath={currentPath} />
+              <Breadcrumb />
               <FileList 
                 viewMode={viewMode}
                 selectedFiles={selectedFiles}

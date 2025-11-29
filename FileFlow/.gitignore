@@ -15,3 +15,11 @@ instance/
 # Ignore uploaded user files but keep the directory via .gitkeep
 user_files/*
 !user_files/.gitkeep
+
+# Speedtest artifacts (local test executables and logs)
+speedtest
+speedtest*
+*.speedtest
+*.speedtest.log
+speedtest.log
+speedtest-results/
